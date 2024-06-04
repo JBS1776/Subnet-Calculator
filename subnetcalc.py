@@ -116,12 +116,12 @@ def listsubnetsperhost(ip, insubnet):
 
 
 def main():
-    print('Give IP address')
+    print('Give IPv4 address')
     s = input()
     if not validip(s):
         print("IP is invalid!")
         return 1
-    print('Give Subnet Mask')
+    print('Give IPv4 or cidr Subnet Mask')
     t = input()
     if t.isdigit():
         t = int(t)
