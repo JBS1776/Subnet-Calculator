@@ -35,6 +35,8 @@ def validsubnet(subnet):
             return True
         while toshift > 0:
             tocmp = (sigbit << toshift) & maxip
+            if tocmp > ipnum:
+                return False
             if tocmp == ipnum:
                 return True
             sigbit += (1 << (32 - toshift))
