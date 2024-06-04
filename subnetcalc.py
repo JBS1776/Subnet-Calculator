@@ -1,23 +1,16 @@
 import re
-import math
 
 maxip = 0xffffffff
 
-def nextpow2(val):
-    result = 1
-    count = 0
-    while result < val:
-        result <<= 1
-        count += 1
-    return count
-
-def ispow2(val):
-    result = math.log2(val) - math.floor(val)
-    return result == 0.0
+# Main function checks for input correctness so that helper functions can assume correct input is inserted
 
 def validip(ip):
+    if ip.count('.') != 3:
+        return False
     ipstr = ip.split('.')
     for i in range(0, 4):
+        if not ipstr[i].isdigit():
+            return False
         if int(ipstr[i]) >> 8 > 0:
             return False
     return True
@@ -26,7 +19,6 @@ def validsubnet(subnet):
     if isinstance(subnet, int):
         return subnet >= 0 and subnet <= 32
     else:
-        ipstr = subnet.split('.')
         # Subnets that are not powers of 2 are invalid
         ipnum = iptohex(subnet)
         sigbit = 1
@@ -99,24 +91,6 @@ def usablehostcount(subnet):
         return 32 - subnet
     return (totalhostcount(subnet) - 2) & maxip
 
-def subnetclass(subnet):
-    if subnet >= 24:
-        return "C"
-    if subnet >= 16:
-        return "B"
-    return "A"
-
-def ipblock(subnet):
-    if subnet == 32:
-        return 32
-    if subnet >= 24:
-        return 24
-    if subnet >= 16:
-        return 16
-    if subnet >= 8:
-        return 8
-    return 0
-
 def networkaddr(ip, subnet):
     return iptohex(ip) & cidrtosubnet(subnet)
 
@@ -149,6 +123,12 @@ def main():
         return 1
     print('Give Subnet Mask')
     t = input()
+    if t.isdigit():
+        t = int(t)
+    else:
+        if not validip(t):
+            print("Subnet is invalid!")
+            return 1
     if not validsubnet(t):
         print("Subnet is invalid!")
         return 1
