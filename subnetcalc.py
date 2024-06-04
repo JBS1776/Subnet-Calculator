@@ -1,5 +1,3 @@
-import re
-
 maxip = 0xffffffff
 
 # Main function checks for input correctness so that helper functions can assume correct input is inserted
