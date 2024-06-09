@@ -13,26 +13,6 @@ def validip(ip):
             return False
     return True
 
-def validsubnet(subnet):
-    if isinstance(subnet, int):
-        return subnet >= 0 and subnet <= 32
-    else:
-        # Subnets that are not powers of 2 are invalid
-        ipnum = iptohex(subnet)
-        sigbit = 1
-        toshift = 31
-        if ipnum == 0 or ipnum == maxip:
-            return True
-        while toshift > 0:
-            tocmp = (sigbit << toshift) & maxip
-            if tocmp > ipnum:
-                return False
-            if tocmp == ipnum:
-                return True
-            sigbit += (1 << (32 - toshift))
-            toshift -= 1
-        return False
-
 def iptohex(ip):
     ipstr = ip.split('.')
     sl = 24
@@ -55,25 +35,24 @@ def hextoip(val):
     return result
 
 def cidrtosubnet(subnet):
-    sl = 32 - subnet
-    return maxip & (maxip << sl)
+    return maxip & (maxip << (32 - subnet))
 
 def subnettoip(subnet):
     return hextoip(cidrtosubnet(subnet))
 
 def subnetiptocidr(ip):
     subnetip = iptohex(ip)
-    if subnetip == 0:
-        return 0
-    sigbit = 1
-    toshift = 31
-    while toshift > 0:
+    sigbit = 0
+    toshift = 32
+    while toshift >= 0:
         tocmp = (sigbit << toshift) & maxip
+        if tocmp > subnetip:
+            return -1
         if tocmp == subnetip:
             return 32 - toshift
         sigbit += (1 << (32 - toshift))
         toshift -= 1
-    return 32
+    return -1
 
 def cidrtowildcard(subnet):
     return ~(cidrtosubnet(subnet))
@@ -114,22 +93,26 @@ def listsubnetsperhost(ip, insubnet):
 
 
 def main():
-    print('Give IPv4 address')
+    print('Give IPv4 address from 0.0.0.0 to 255.255.255.255')
     s = input()
     if not validip(s):
-        print("IP is invalid!")
+        print("IP is invalid!  Must be a valid IPv4 IP address and each octet value must be between 0 and 255.")
         return 1
-    print('Give IPv4 or cidr Subnet Mask')
+    print('Give IPv4 or CIDR Subnet Mask 255.255.255.0 and 24 are examples of valid inputs')
     t = input()
     if t.isdigit():
         t = int(t)
+        if t < 0 or t > 32:
+            print("CIDR value is invalid!  Must be between 0 and 32")
+            return 1
     else:
         if not validip(t):
+            print("Subnet is invalid!  Each octet must be between 0 and 255.")
+            return 1
+        t = subnetiptocidr(t)
+        if t < 0:
             print("Subnet is invalid!")
             return 1
-    if not validsubnet(t):
-        print("Subnet is invalid!")
-        return 1
     listsubnetsperhost(s, t)
 
 if __name__ == "__main__":
