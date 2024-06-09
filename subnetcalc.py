@@ -85,9 +85,9 @@ def listsubnetsperhost(ip, insubnet):
         startaddress = networkaddr(ip, subnet)
         endaddress = bcastaddr(ip, subnet)
         print("Subnet " + str(subnet) + ": " + hextoip(cidrtosubnet(subnet))
-             + " First network: " + hextoip(startaddress) 
-              + " - " + hextoip(endaddress) + " Subnet count: " + str(count)
-              + " Usable hosts per subnet: " + str(usablehostcount(subnet)))
+             + " | First network: " + hextoip(startaddress) 
+              + " - " + hextoip(endaddress) + " | Subnet count: " + str(count)
+              + " | Usable hosts per subnet: " + str(usablehostcount(subnet)))
         count <<= 1
         subnet += 1
 
