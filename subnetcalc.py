@@ -84,8 +84,8 @@ def listsubnetsperhost(ip, insubnet):
     while subnet <= 32:
         startaddress = networkaddr(ip, subnet)
         endaddress = bcastaddr(ip, subnet)
-        print("Subnet " + str(subnet) + ": " + hextoip(cidrtosubnet(subnet))
-             + " | First network: " + hextoip(startaddress) 
+        print("Subnet " + str(subnet) + ": " + hextoip(cidrtosubnet(subnet)) + " | Wildcard : " + wildcardtoip(subnet)
+             + " | First network (network to broadcast IPs of subnet): " + hextoip(startaddress) 
               + " - " + hextoip(endaddress) + " | Subnet count: " + str(count)
               + " | Usable hosts per subnet: " + str(usablehostcount(subnet)))
         count <<= 1
